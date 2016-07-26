@@ -23,7 +23,6 @@
             </tr>
             </thead>
             <tbody>
-            @if(isset($clients))
             @foreach($clients as $client)
             <tr>
                 <td>{{ $client->id }}</td>
@@ -39,13 +38,10 @@
                 </td>
             </tr>
             @endforeach
-            @endif
             </tbody>
         </table>
 
-        @if(isset($clients))
         {!! $clients->render() !!}
-        @endif
 
     </div>
 

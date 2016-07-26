@@ -13,26 +13,14 @@ use CodeDelivery\Http\Requests;
 
 class OrdersController extends Controller
 {
-
     /**
      * @var OrderRepository
      */
     private $orderRepository;
 
-    /**
-     * @var OrderItemRepository
-     */
-    private $orderItemRepository;
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
-
-    public function __construct(OrderRepository $orderRepository, OrderItemRepository $orderItemRepository, UserRepository $userRepository)
+    public function __construct(OrderRepository $orderRepository)
     {
         $this->orderRepository = $orderRepository;
-        $this->orderItemRepository = $orderItemRepository;
-        $this->userRepository = $userRepository;
     }
 
     public function index()
@@ -42,13 +30,13 @@ class OrdersController extends Controller
         return view('admin.orders.index', compact('orders'));
     }
 
-    public function edit($id)
+    public function edit($id, UserRepository $userRepository)
     {
         $order = $this->orderRepository->find($id);
-        $users = $this->userRepository->lists('name', 'id');
+        $deliverymen = $userRepository->getDeliverymen();
         $states = [0=>'Pendente', 1=>'Processando', 2=>'Entregue', 3=>'Cancelado'];
 
-        return view('admin.orders.edit', compact('order', 'users', 'states'));
+        return view('admin.orders.edit', compact('order', 'deliverymen', 'states'));
     }
 
     public function update(AdminOrderRequest $request, $id)

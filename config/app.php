@@ -152,6 +152,7 @@ return [
 
         Prettus\Repository\Providers\RepositoryServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         
         /*
          * Application Service Providers...
