@@ -71,3 +71,23 @@ Route::group(['prefix'=>'customer', 'middleware'=>'auth.checkrole:client', 'as'=
     Route::post('order/store', ['as'=>'order.store', 'uses'=>'CheckoutController@store']);
 
 });
+
+Route::post('oauth/access_token', function() {
+    return Response::json(Authorizer::issueAccessToken());
+});
+
+Route::group(['prefix'=>'api', 'middleware'=>'oauth', 'as'=>'api.'], function (){
+    Route::get('orders', function (){
+        return [
+            'id' => 1,
+            'client' => 'Cleber Picolo',
+            'total' => 10
+        ];
+    });
+    Route::get('teste', function (){
+        return [
+            'id' => 1,
+            'client' => 'test'
+        ];
+    });
+});
