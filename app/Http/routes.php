@@ -87,12 +87,10 @@ Route::group(['prefix'=>'api', 'middleware'=>'oauth', 'as'=>'api.'], function ()
     });
 
     Route::group(['prefix'=>'deliveryman', 'middleware'=>'oauth.checkrole:deliveryman', 'as'=>'deliveryman.'], function (){
-        Route::get('teste', function (){
-            return [
-                'id' => 1,
-                'client' => 'Deliveryman'
-            ];
-        });
+        Route::resource('order', 'Api\Deliveryman\DeliverymanCheckoutController', [
+            'except' => ['create', 'edit', 'destroy', 'store']
+        ]);
+        Route::patch('order/{id}/status', ['as'=>'order.status.update', 'uses'=>'Api\Deliveryman\DeliverymanCheckoutController@updateStatus']);
     });
 
 });

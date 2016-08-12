@@ -30,7 +30,10 @@ class AuthController extends Controller
     public function index()
     {
         $id = Authorizer::getResourceOwnerId();
-        $userAuthenticated = $this->userRepository->with('client')->find($id);
+        $userAuthenticated = $this->userRepository
+            ->skipPresenter(false)
+            ->with('client')
+            ->find($id);
 
         return $userAuthenticated;
     }
