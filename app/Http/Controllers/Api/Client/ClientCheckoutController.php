@@ -55,7 +55,7 @@ class ClientCheckoutController extends Controller
             ->with($this->with)
             ->scopeQuery(function ($query) use($clientID){
                 return $query->where('client_id','=',$clientID);
-            })->paginate();
+            })->all();
 
         return $orders;
     }
