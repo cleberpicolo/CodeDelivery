@@ -15,7 +15,7 @@ angular.module('starter.controllers')
             OAuth.getAccessToken($scope.user)
                 .then(function (data) {
                     $ionicLoading.hide();
-                    $state.go('home');
+                    $state.go('client.view_products');
                 },function (responseError) {
                     $ionicLoading.hide();
                     $ionicPopup.alert({

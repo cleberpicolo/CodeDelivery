@@ -21,8 +21,9 @@ class CupomTransformer extends TransformerAbstract
     public function transform(Cupom $model)
     {
         return [
-//            'id'         => (int) $model->id,
-            'code'       => (int) $model->code,
+            'id'         => (int) $model->id,
+            'code'       => $model->code,
+            'value'      => (float) $model->value
 //            'created_at' => $model->created_at,
 //            'updated_at' => $model->updated_at
         ];

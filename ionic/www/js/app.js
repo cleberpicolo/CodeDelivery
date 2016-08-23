@@ -7,9 +7,9 @@ angular.module('starter.controllers', []);
 angular.module('starter.services', []);
 
 angular.module('starter', [
-    'ionic', 'starter.controllers', 'starter.services', 'angular-oauth2', 'ngResource'])
+    'ionic', 'starter.controllers', 'starter.services', 'angular-oauth2', 'ngResource', 'ngCordova'])
     .constant('appConfig', {
-        baseUrl: 'http://localhost:8000'
+        baseUrl: 'http://192.168.0.11:8000'
     })
     .run(function ($ionicPlatform) {
         $ionicPlatform.ready(function () {
@@ -28,7 +28,7 @@ angular.module('starter', [
             }
         });
     })
-    .config(function ($stateProvider, $urlRouterProvider, OAuthProvider, OAuthTokenProvider, appConfig) {
+    .config(function ($stateProvider, $urlRouterProvider, OAuthProvider, OAuthTokenProvider, appConfig, $provide) {
 
         OAuthProvider.configure({
             baseUrl: appConfig.baseUrl,
@@ -72,6 +72,7 @@ angular.module('starter', [
                 controller: 'ClientCheckoutDetailCtrl'
             })
             .state('client.checkout_successful', {
+                cache: false,
                 url: '/checkout/successful',
                 templateUrl: 'templates/client/checkout-successful.html',
                 controller: 'ClientCheckoutSuccessfulCtrl'
@@ -86,5 +87,40 @@ angular.module('starter', [
                 templateUrl: 'templates/client/view-products.html',
                 controller: 'ClientViewProductsCtrl'
             });
-        //$urlRouterProvider.otherwise('/main');
+        $urlRouterProvider.otherwise('/home');
+
+        /**
+         * Sobrescrevendo os métodos da classe OAuthToken.
+         * Adicionando suporte a localStorage ao invés de utilizar cookies
+         */
+        $provide.decorator('OAuthToken', [
+            '$localStorage', '$delegate',
+            function ($localStorage, $delegate) {
+                console.log($delegate);
+                Object.defineProperties($delegate, {
+                    setToken: {
+                        key: "setToken",
+                        value: function (data) {
+                            return $localStorage.setObject('token', data);
+                        }/*,
+                        enumerable: true,
+                        configurable: true,
+                        writable: true*/
+                    },
+                    getToken: {
+                        key: "getToken",
+                        value: function () {
+                            return $localStorage.getObject('token');
+                        }
+                    },
+                    removeToken: {
+                        key: "removeToken",
+                        value: function () {
+                            $localStorage.setObject('token', null);
+                        }
+                    }
+                });
+                return $delegate;
+        }]);
+
     });
