@@ -1,7 +1,9 @@
 angular.module('starter.controllers')
     .controller('DeliverymanOrderCtrl', [
-        '$scope', '$ionicLoading', '$stateParams', 'DeliverymanOrder',
-        function ($scope, $ionicLoading, $stateParams, DeliverymanOrder) {
+        '$scope', '$ionicLoading', '$ionicPopup', '$stateParams', 'DeliverymanOrder', '$cordovaGeolocation',
+        function ($scope, $ionicLoading, $ionicPopup, $stateParams, DeliverymanOrder, $cordovaGeolocation) {
+
+            var watch;
 
             $scope.order = {};
             $ionicLoading.show({
@@ -15,11 +17,39 @@ angular.module('starter.controllers')
                 $ionicLoading.hide();
             });
 
-            DeliverymanOrder.updateStatus({id: $stateParams.id}, {status: 1}, function (data) {
-                console.log(data);
-            });
+            $scope.goToDelivery = function () {
+                $ionicPopup.alert({
+                    title: 'Advertência',
+                    template: 'Para parar a localização dê ok'
+                }).then(function () {
+                    stopWatchPosition();
+                });
 
-            DeliverymanOrder.geo({id: $stateParams.id},{lat: -23.4444, lon: -47.4444}, function (data) {
-                console.log(data);
-            });
+                DeliverymanOrder.updateStatus({id: $stateParams.id}, {status: 1}, function (data) {
+                    var watchOptions = {
+                        timeout: 3000,
+                        enableHighAccuracy: false
+                    };
+
+                    watch = $cordovaGeolocation.watchPosition(watchOptions);
+                    watch.then(null,
+                        function (error) {
+
+                        },
+                        function (position) {
+                            DeliverymanOrder.geo({id: $stateParams.id}, {
+                                lat: position.coords.latitude,
+                                lon: position.coords.longitude
+                            });
+                        }
+                    );
+                });
+            };
+
+            function stopWatchPosition() {
+                if(watch && typeof watch == 'object' && watch.hasOwnProperty('watchID')){
+                    $cordovaGeolocation.clearWatch(watch.watchID);
+                }
+            }
+
         }]);
