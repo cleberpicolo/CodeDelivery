@@ -94,6 +94,7 @@ Route::group(['middleware'=>'cors'], function (){
                 'except' => ['create', 'edit', 'destroy', 'store']
             ]);
             Route::patch('order/{id}/status', ['as'=>'order.status.update', 'uses'=>'Api\Deliveryman\DeliverymanCheckoutController@updateStatus']);
+            Route::post('order/{id}/geo', ['as'=>'order.geo', 'uses'=>'Api\Deliveryman\DeliverymanCheckoutController@geo']);
         });
 
         Route::get('cupom/{code}', ['as'=>'cupom', 'uses'=>'Api\CupomController@show']);

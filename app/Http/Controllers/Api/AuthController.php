@@ -21,6 +21,7 @@ class AuthController extends Controller
 
     /**
      * AuthController constructor.
+     * @param UserRepository $userRepository
      */
     public function __construct(UserRepository $userRepository)
     {
@@ -32,7 +33,6 @@ class AuthController extends Controller
         $id = Authorizer::getResourceOwnerId();
         $userAuthenticated = $this->userRepository
             ->skipPresenter(false)
-            ->with('client')
             ->find($id);
 
         return $userAuthenticated;

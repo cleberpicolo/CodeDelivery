@@ -1,7 +1,7 @@
 angular.module('starter.controllers')
     .controller('LoginCtrl', [
-        '$scope', 'OAuth', '$ionicPopup', '$ionicLoading', '$state',
-        function ($scope, OAuth, $ionicPopup, $ionicLoading, $state) {
+        '$scope', 'OAuth', 'OAuthToken', '$ionicPopup', '$ionicLoading', '$state', '$localStorage', 'User', 'UserData',
+        function ($scope, OAuth, OAuthToken, $ionicPopup, $ionicLoading, $state, $localStorage, User, UserData) {
 
         $scope.user = {
             username: '',
@@ -12,17 +12,26 @@ angular.module('starter.controllers')
             $ionicLoading.show({
                 template: 'Loading ...'
             });
-            OAuth.getAccessToken($scope.user)
+
+            var promise = OAuth.getAccessToken($scope.user);
+
+            promise
                 .then(function (data) {
+                    return User.authenticated({include: 'client'}).$promise;
+                })
+                .then(function (data) {
+                    UserData.set(data.data);
                     $ionicLoading.hide();
-                    $state.go('client.view_products');
-                },function (responseError) {
+                    $state.go('client.checkout');
+                }, function (error) {
+                    UserData.set(null);
+                    OAuthToken.removeToken();
                     $ionicLoading.hide();
                     $ionicPopup.alert({
                         title: 'Acesso Negado',
                         template: 'Login e/ou senha inválidos'
                     });
-                    console.log(responseError);
+                    console.log(error);
                 });
         }
     }]);

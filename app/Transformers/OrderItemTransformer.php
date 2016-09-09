@@ -11,7 +11,7 @@ use CodeDelivery\Models\OrderItem;
  */
 class OrderItemTransformer extends TransformerAbstract
 {
-    protected $availableIncludes = ['product'];
+    protected $defaultIncludes = ['product'];
 
     /**
      * Transform the \OrderItem entity

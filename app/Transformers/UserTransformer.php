@@ -2,6 +2,7 @@
 
 namespace CodeDelivery\Transformers;
 
+use CodeDelivery\Models\Client;
 use League\Fractal\TransformerAbstract;
 use CodeDelivery\Models\User;
 
@@ -11,6 +12,7 @@ use CodeDelivery\Models\User;
  */
 class UserTransformer extends TransformerAbstract
 {
+    protected $availableIncludes = ['client'];
 
     /**
      * Transform the \User entity
@@ -28,5 +30,14 @@ class UserTransformer extends TransformerAbstract
 //            'created_at' => $model->created_at,
 //            'updated_at' => $model->updated_at
         ];
+    }
+
+    public function includeClient(User $model)
+    {
+        if($model->client) {
+            return $this->item($model->client, new ClientTransformer());
+        }else{
+            return null;
+        }
     }
 }
