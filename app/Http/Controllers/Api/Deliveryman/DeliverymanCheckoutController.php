@@ -2,6 +2,7 @@
 
 namespace CodeDelivery\Http\Controllers\Api\Deliveryman;
 
+use CodeDelivery\Events\GetLocationDeliveryman;
 use CodeDelivery\Http\Controllers\Controller;
 use CodeDelivery\Models\Geo;
 use CodeDelivery\Repositories\OrderRepository;
@@ -78,6 +79,9 @@ class DeliverymanCheckoutController extends Controller
         $order = $this->orderRepository->getByIdAndDeliveryman($id, $userID);
         $geo->lat = $request->get('lat');
         $geo->lon = $request->get('lon');
+
+        event(new GetLocationDeliveryman($geo, $order));
+
         return $geo;
     }
 }
