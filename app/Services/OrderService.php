@@ -84,11 +84,11 @@ class OrderService
     public function updateStatus($id, $deliverymanID, $status)
     {
         $order = $this->orderRepository->getByIdAndDeliveryman($id, $deliverymanID);
-        if($order instanceof Order){
-            $order->status = $status;
-            $order->save();
-            return $order;
+        $order->status = $status;
+        if((int)$order->status == 1 && !$order->hash){
+            $order->hash = md5((new \DateTime())->getTimestamp());
         }
-        return false;
+        $order->save();
+        return $order;
     }
 }
